@@ -1,5 +1,6 @@
 package com.wexad.BurgerHub.service;
 
+import com.wexad.BurgerHub.model.Address;
 import com.wexad.BurgerHub.repository.AddressRepository;
 import org.springframework.stereotype.Service;
 
@@ -9,5 +10,9 @@ public class AddressService {
 
     public AddressService(AddressRepository addressRepository) {
         this.addressRepository = addressRepository;
+    }
+
+    public void save(Address address) {
+        addressRepository.save(address);
     }
 }

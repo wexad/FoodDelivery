@@ -15,7 +15,7 @@ public class Address extends Auditable {
     private String country;
     private String city;
     private String street;
-    private Long number;
+    private String number;
     @OneToOne(mappedBy = "address")
     private AuthUser user;
 }
