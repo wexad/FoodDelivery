@@ -1,9 +1,11 @@
 package com.wexad.BurgerHub.handler;
 
 import com.wexad.BurgerHub.dto.ErrorResponseDTO;
+import com.wexad.BurgerHub.handler.exceptions.UserDeletedException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -28,5 +30,22 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(new ErrorResponseDTO(message));
     }
 
+    @ExceptionHandler(UserDeletedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ResponseEntity<ErrorResponseDTO> handleUserDeletedException(UserDeletedException ex) {
+        String message = "User is deleted.";
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(new ErrorResponseDTO(message));
+    }
 
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<ErrorResponseDTO> handleBadCredentialsException(BadCredentialsException ex) {
+        String message = "Invalid username or password.";
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorResponseDTO(message));
+    }
 }
+

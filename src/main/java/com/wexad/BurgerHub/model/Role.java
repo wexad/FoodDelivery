@@ -1,5 +1,6 @@
 package com.wexad.BurgerHub.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.wexad.BurgerHub.enums.RoleName;
 import jakarta.persistence.*;
 import lombok.*;
@@ -20,7 +21,7 @@ public class Role extends Auditable {
     private RoleName name;
 
     private String description;
-
+    @JsonBackReference
     @ManyToMany(mappedBy = "roles")
     private Set<AuthUser> users;
 

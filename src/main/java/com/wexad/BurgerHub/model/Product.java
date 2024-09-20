@@ -16,6 +16,7 @@ public class Product extends Auditable {
 
     private String name;
     private String description;
+    private Double price;
 
     @ManyToOne
     @JoinColumn(name = "compound_id")

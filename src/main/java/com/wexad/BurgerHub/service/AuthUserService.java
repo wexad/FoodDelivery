@@ -1,7 +1,10 @@
 package com.wexad.BurgerHub.service;
 
 import com.wexad.BurgerHub.dto.AuthUserDTO;
+import com.wexad.BurgerHub.dto.UserDTO;
 import com.wexad.BurgerHub.enums.RoleName;
+import com.wexad.BurgerHub.handler.exceptions.UserDeletedException;
+import com.wexad.BurgerHub.mapper.UserMapper;
 import com.wexad.BurgerHub.model.AuthUser;
 import com.wexad.BurgerHub.model.Role;
 import com.wexad.BurgerHub.repository.AuthUserRepository;
@@ -12,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
 import static com.wexad.BurgerHub.mapper.UserMapper.USER_MAPPER;
@@ -61,4 +65,31 @@ public class AuthUserService implements CommandLineRunner {
 
 
     }
+
+    public void deleteUser(Long id) {
+        authUserRepository.updateDeletedBy(id);
+    }
+
+    public List<UserDTO> getAllUsers() {
+        return USER_MAPPER.toUserDtoList(authUserRepository.findAll());
+    }
+
+    public UserDTO getUserById(Long id) {
+        return UserMapper.toUserDto(findById(id).orElseGet(() ->
+                AuthUser.builder()
+                        .id(0L)
+                        .username("none")
+                        .roles(new HashSet<>())
+                        .email("none")
+                        .deleted(false)
+                        .build()
+        ));
+    }
+
+    public void isDeleted(AuthUserDTO user) {
+        if (authUserRepository.isDeleted(USER_MAPPER.toEntity(user).getUsername())) {
+            throw new UserDeletedException("User is deleted");
+        }
+    }
+
 }

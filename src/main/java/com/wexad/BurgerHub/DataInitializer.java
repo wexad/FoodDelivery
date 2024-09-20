@@ -59,9 +59,6 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                     .build();
 
             authUserRepository.save(adminUser);
-            System.out.println("Admin user created with username: sys");
-        } else {
-            System.out.println("Admin user already exists.");
         }
     }
 

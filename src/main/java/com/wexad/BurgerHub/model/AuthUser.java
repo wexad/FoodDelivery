@@ -1,8 +1,10 @@
 package com.wexad.BurgerHub.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.HashSet;
@@ -11,7 +13,7 @@ import java.util.Set;
 @Setter
 @Getter
 @Entity
-@Builder
+@SuperBuilder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
@@ -24,6 +26,7 @@ public class AuthUser extends Auditable {
     @Column(unique = true)
     private String email;
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @JsonManagedReference
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),

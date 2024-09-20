@@ -30,11 +30,6 @@ public class HomeController {
         return "User";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/addAdmin/{id}/")
-    public String addAdmin(@PathVariable Long id) {
-        roleService.addAdminRoleToUser(id);
-        return "Admin added";
-    }
+
 
 }
