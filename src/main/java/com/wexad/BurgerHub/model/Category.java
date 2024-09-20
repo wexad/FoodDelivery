@@ -3,8 +3,10 @@ package com.wexad.BurgerHub.model;
 import com.wexad.BurgerHub.enums.CategoryName;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+@SuperBuilder(toBuilder = true)
 @Setter
 @Getter
 @Entity
@@ -21,7 +23,7 @@ public class Category extends Auditable {
 
     private String description;
 
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "image_id")
     private Image image;
 }

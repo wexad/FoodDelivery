@@ -4,6 +4,7 @@ import com.wexad.BurgerHub.dto.AuthUserDTO;
 import com.wexad.BurgerHub.dto.UserDTO;
 import com.wexad.BurgerHub.enums.RoleName;
 import com.wexad.BurgerHub.handler.exceptions.UserDeletedException;
+import com.wexad.BurgerHub.handler.exceptions.UserNotFoundException;
 import com.wexad.BurgerHub.mapper.UserMapper;
 import com.wexad.BurgerHub.model.AuthUser;
 import com.wexad.BurgerHub.model.Role;
@@ -21,17 +22,15 @@ import java.util.Optional;
 import static com.wexad.BurgerHub.mapper.UserMapper.USER_MAPPER;
 
 @Service
-public class AuthUserService implements CommandLineRunner {
+public class AuthUserService {
     private final AuthUserRepository authUserRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
-    private final DataInitializer dataInitializer;
 
-    public AuthUserService(AuthUserRepository authUserRepository, PasswordEncoder passwordEncoder, RoleService roleService, DataInitializer dataInitializer) {
+    public AuthUserService(AuthUserRepository authUserRepository, PasswordEncoder passwordEncoder, RoleService roleService) {
         this.authUserRepository = authUserRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleService = roleService;
-        this.dataInitializer = dataInitializer;
     }
 
     public void save(AuthUserDTO user) {
@@ -60,13 +59,9 @@ public class AuthUserService implements CommandLineRunner {
         return authUserRepository.findByUsername(username);
     }
 
-    @Override
-    public void run(String... args) throws Exception {
-
-
-    }
 
     public void deleteUser(Long id) {
+        UserMapper.toUserDto(findById(id).orElseThrow(() -> new UserNotFoundException("User Not Found")));
         authUserRepository.updateDeletedBy(id);
     }
 
@@ -75,14 +70,8 @@ public class AuthUserService implements CommandLineRunner {
     }
 
     public UserDTO getUserById(Long id) {
-        return UserMapper.toUserDto(findById(id).orElseGet(() ->
-                AuthUser.builder()
-                        .id(0L)
-                        .username("none")
-                        .roles(new HashSet<>())
-                        .email("none")
-                        .deleted(false)
-                        .build()
+        return UserMapper.toUserDto(findById(id).orElseThrow(() ->
+                new UserNotFoundException("User not found")
         ));
     }
 

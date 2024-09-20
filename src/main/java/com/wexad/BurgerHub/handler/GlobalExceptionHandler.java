@@ -2,6 +2,7 @@ package com.wexad.BurgerHub.handler;
 
 import com.wexad.BurgerHub.dto.ErrorResponseDTO;
 import com.wexad.BurgerHub.handler.exceptions.UserDeletedException;
+import com.wexad.BurgerHub.handler.exceptions.UserNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +46,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         String message = "Invalid username or password.";
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorResponseDTO(message));
+    }
+    @ExceptionHandler(UserNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<ErrorResponseDTO> handleUserNotFoundException(UserNotFoundException ex) {
+        String message = "User not found.";
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponseDTO(message));
     }
 }

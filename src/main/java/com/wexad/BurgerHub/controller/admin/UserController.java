@@ -29,26 +29,26 @@ public class UserController {
         return ResponseEntity.ok("Admin role added to user with id: " + id);
     }
 
-    @PostMapping("/createUser")
+    @PostMapping("/")
     public ResponseEntity<String> createUser(@RequestBody AuthUserDTO user) {
         authUserService.save(user);
         return new ResponseEntity<>("User created successfully", HttpStatus.CREATED);
     }
 
 
-    @DeleteMapping("/deleteUser/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         authUserService.deleteUser(id);
         return ResponseEntity.ok("User with id: " + id + " deleted");
     }
 
-    @GetMapping("/getUser/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(authUserService.getUserById(id));
 
     }
 
-    @GetMapping("/listUsers")
+    @GetMapping("/")
     public ResponseEntity<List<UserDTO>> listAllUsers() {
         return ResponseEntity.ok(authUserService.getAllUsers());
     }
