@@ -1,6 +1,7 @@
 package com.wexad.BurgerHub.service;
 
 import com.wexad.BurgerHub.handler.exceptions.ProductNotFoundException;
+import com.wexad.BurgerHub.model.Image;
 import com.wexad.BurgerHub.repository.ImageRepository;
 import org.springframework.stereotype.Service;
 
@@ -12,4 +13,7 @@ public class ImageService {
         this.imageRepository = imageRepository;
     }
 
+    public void save(Image image) {
+        imageRepository.save(image);
+    }
 }

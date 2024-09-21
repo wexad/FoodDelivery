@@ -2,10 +2,14 @@ package com.wexad.BurgerHub.service;
 
 import com.wexad.BurgerHub.dto.AuthUserDTO;
 import com.wexad.BurgerHub.dto.Tokens;
+import com.wexad.BurgerHub.model.AuthUser;
 import com.wexad.BurgerHub.model.RefreshToken;
 import com.wexad.BurgerHub.repository.RefreshTokenRepository;
 import com.wexad.BurgerHub.security.JwtTokenUtil;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class RefreshTokenService {
@@ -13,8 +17,8 @@ public class RefreshTokenService {
     private final AuthUserService authUserService;
     private final JwtTokenUtil jwtTokenUtil;
     private final CustomUserDetailsService customUserDetailsService;
-    private final static Integer REFRESH_TOKEN_EXPIRES_IN = 1000 * 60 * 60;
-    private final static Integer ACCESS_TOKEN_EXPIRES_IN = 1000 * 60;
+    private static final Integer REFRESH_TOKEN_EXPIRES_IN = 1000 * 60 * 60;
+    private static final Integer ACCESS_TOKEN_EXPIRES_IN = 1000 * 60;
 
     public RefreshTokenService(RefreshTokenRepository refreshTokenRepository, AuthUserService authUserService, JwtTokenUtil jwtTokenUtil, CustomUserDetailsService customUserDetailsService) {
         this.refreshTokenRepository = refreshTokenRepository;
@@ -23,32 +27,36 @@ public class RefreshTokenService {
         this.customUserDetailsService = customUserDetailsService;
     }
 
-    public void save(String refreshToken, Long id) {
+    public void save(String refreshToken, Long userId) {
         refreshTokenRepository.save(
-                RefreshToken.builder().
-                        token(refreshToken).
-                        userId(id).
-                        build()
+                RefreshToken.builder()
+                        .token(refreshToken)
+                        .userId(userId)
+                        .build()
         );
     }
 
-    public void findByToken(String token) {
-        refreshTokenRepository.findByToken(token).orElseThrow(
-                () -> new RuntimeException("Could not find Token"));
+    public RefreshToken findByToken(String token) {
+        return refreshTokenRepository.findByToken(token).orElseThrow(
+                () -> new IllegalArgumentException("Refresh token not found.")
+        );
     }
 
     public Tokens getTokens(AuthUserDTO user) {
-        String refreshToken = jwtTokenUtil.generateToken(user.username(), REFRESH_TOKEN_EXPIRES_IN);
-        String accessToken = jwtTokenUtil.generateToken(user.username(), ACCESS_TOKEN_EXPIRES_IN);
         Long userId = getUserIdWithUsername(user.username());
-        System.out.println(userId + " " + user.username());
+        AuthUser authUser = authUserService.findById(userId).orElseThrow(() -> new IllegalArgumentException("Auth user not found."));
+        Set<String> roles = authUser.getRoles().stream()
+                .map(role -> role.getName().name())
+                .collect(Collectors.toSet());
+        String refreshToken = jwtTokenUtil.generateToken(user.username(), REFRESH_TOKEN_EXPIRES_IN, roles);
+        String accessToken = jwtTokenUtil.generateToken(user.username(), ACCESS_TOKEN_EXPIRES_IN, roles);
         deleteWithUserId(userId);
         save(refreshToken, userId);
         return new Tokens(accessToken, refreshToken);
     }
 
-    private void deleteWithUserId(Long id) {
-        refreshTokenRepository.deleteWithUserId(id);
+    private void deleteWithUserId(Long userId) {
+        refreshTokenRepository.deleteWithUserId(userId);
     }
 
     public Long getUserIdWithUsername(String username) {
@@ -60,6 +68,13 @@ public class RefreshTokenService {
         jwtTokenUtil.validateToken(tokens.refreshToken(),
                 customUserDetailsService.loadUserByUsername(username));
         findByToken(tokens.refreshToken());
-        return new Tokens(jwtTokenUtil.generateToken(username, ACCESS_TOKEN_EXPIRES_IN), tokens.refreshToken());
+        Long userId = getUserIdWithUsername(username);
+        AuthUser authUser = authUserService.findById(userId).orElseThrow(() -> new IllegalArgumentException("Auth user not found."));
+        Set<String> roles = authUser.getRoles().stream()
+                .map(role -> role.getName().name())
+                .collect(Collectors.toSet());
+        String newAccessToken = jwtTokenUtil.generateToken(username, ACCESS_TOKEN_EXPIRES_IN, roles);
+
+        return new Tokens(newAccessToken, tokens.refreshToken());
     }
 }

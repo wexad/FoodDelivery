@@ -1,6 +1,7 @@
 package com.wexad.BurgerHub.handler;
 
 import com.wexad.BurgerHub.dto.ErrorResponseDTO;
+import com.wexad.BurgerHub.handler.exceptions.PasswordIncorrectException;
 import com.wexad.BurgerHub.handler.exceptions.ProductNotFoundException;
 import com.wexad.BurgerHub.handler.exceptions.UserDeletedException;
 import com.wexad.BurgerHub.handler.exceptions.UserNotFoundException;
@@ -65,6 +66,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         String message = "Product not found.";
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponseDTO(message));
+    }
+
+    @ExceptionHandler(PasswordIncorrectException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<ErrorResponseDTO> handleUserNotFoundException(PasswordIncorrectException ex) {
+        String message = "Password is incorrect.";
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponseDTO(message));
     }
 }

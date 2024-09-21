@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Component
 public class JwtTokenUtil {
@@ -36,9 +39,10 @@ public class JwtTokenUtil {
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    public String generateToken(String username, Integer expiration) {
+    public String generateToken(String username, Integer expiration, Set<String> roles) {
         return Jwts.builder()
                 .setSubject(username)
+                .claim("roles", roles)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
@@ -47,6 +51,11 @@ public class JwtTokenUtil {
 
     public static Key getSignKey() {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET_KEY));
+    }
+
+    public Set<String> extractRoles(String token) {
+        Claims claims = extractClaims(token);
+        return new HashSet<>((List<String>) claims.get("roles"));
     }
 
 }
