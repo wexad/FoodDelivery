@@ -39,5 +39,10 @@ public class CategoryService {
     public void deleteCategory(Long id) {
         categoryRepository.updateDeletedBy(id);
     }
+
+    public Category findById(Long categoryId) {
+        return categoryRepository.findById(categoryId).orElseThrow(() ->
+                new EntityNotFoundException("Category not found"));
+    }
 }
 

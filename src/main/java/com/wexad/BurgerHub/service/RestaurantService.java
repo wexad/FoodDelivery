@@ -55,4 +55,9 @@ public class RestaurantService {
         existingRestaurant.setAddress(updatedAddress);
         restaurantRepository.save(existingRestaurant);
     }
+
+    public Restaurant findById(Long restaurantId) {
+        return restaurantRepository.findById(restaurantId).orElseThrow(() ->
+                new EntityNotFoundException("Restaurant not found with id: " + restaurantId));
+    }
 }

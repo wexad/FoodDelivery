@@ -1,6 +1,7 @@
 package com.wexad.BurgerHub.handler;
 
 import com.wexad.BurgerHub.dto.ErrorResponseDTO;
+import com.wexad.BurgerHub.handler.exceptions.ProductNotFoundException;
 import com.wexad.BurgerHub.handler.exceptions.UserDeletedException;
 import com.wexad.BurgerHub.handler.exceptions.UserNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -48,10 +49,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(new ErrorResponseDTO(message));
     }
+
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<ErrorResponseDTO> handleUserNotFoundException(UserNotFoundException ex) {
         String message = "User not found.";
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponseDTO(message));
+    }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<ErrorResponseDTO> handleUserNotFoundException(ProductNotFoundException ex) {
+        String message = "Product not found.";
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponseDTO(message));

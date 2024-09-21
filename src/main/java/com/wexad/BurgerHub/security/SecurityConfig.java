@@ -2,6 +2,7 @@ package com.wexad.BurgerHub.security;
 
 import com.wexad.BurgerHub.filter.JwtTokenFilter;
 import com.wexad.BurgerHub.service.CustomUserDetailsService;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
@@ -22,6 +23,8 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+
 
 import java.util.Optional;
 

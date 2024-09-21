@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 @RestController
 @PreAuthorize("hasRole('ADMIN')")
-@RequestMapping("/admin/categories")
+@RequestMapping("/admin/category")
 public class CategoryController {
 
     private final CategoryService categoryService;
