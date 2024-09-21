@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
+
 @Setter
 @Getter
 @Entity
@@ -21,5 +23,7 @@ public class Payment extends Auditable {
 
     @Column(nullable = true)
     private Long cardNumber;
+//    @Column(nullable = false)
+    private LocalDateTime paymentDate = LocalDateTime.now();
 }
 

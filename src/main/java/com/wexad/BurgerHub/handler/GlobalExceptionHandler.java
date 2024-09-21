@@ -1,10 +1,7 @@
 package com.wexad.BurgerHub.handler;
 
 import com.wexad.BurgerHub.dto.ErrorResponseDTO;
-import com.wexad.BurgerHub.handler.exceptions.PasswordIncorrectException;
-import com.wexad.BurgerHub.handler.exceptions.ProductNotFoundException;
-import com.wexad.BurgerHub.handler.exceptions.UserDeletedException;
-import com.wexad.BurgerHub.handler.exceptions.UserNotFoundException;
+import com.wexad.BurgerHub.handler.exceptions.*;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -75,6 +72,23 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         String message = "Password is incorrect.";
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorResponseDTO(message));
+    }
+
+    @ExceptionHandler(RequiredAddressException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorResponseDTO> handleUserNotFoundException(RequiredAddressException ex) {
+        String message = "You have to enter your address first.";
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponseDTO(message));
+    }
+    @ExceptionHandler(CategoryNotFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorResponseDTO> handleUserNotFoundException(CategoryNotFoundException ex) {
+        String message = "Category not found";
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponseDTO(message));
     }
 }
