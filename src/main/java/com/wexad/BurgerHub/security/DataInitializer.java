@@ -1,4 +1,4 @@
-package com.wexad.BurgerHub;
+package com.wexad.BurgerHub.security;
 
 import com.wexad.BurgerHub.enums.RoleName;
 import com.wexad.BurgerHub.model.AuthUser;

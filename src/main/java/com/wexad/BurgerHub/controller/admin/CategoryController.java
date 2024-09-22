@@ -1,6 +1,7 @@
 package com.wexad.BurgerHub.controller.admin;
 
 import com.wexad.BurgerHub.dto.CategoryDTO;
+import com.wexad.BurgerHub.dto.CategoryDataDTO;
 import com.wexad.BurgerHub.dto.ImageDTO;
 import com.wexad.BurgerHub.service.CategoryService;
 import com.wexad.BurgerHub.service.StorageService;
@@ -12,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -68,6 +71,15 @@ public class CategoryController {
         try {
             CategoryDTO category = categoryService.getCategoryById(id);
             return ResponseEntity.ok(category);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    @GetMapping("/")
+    public ResponseEntity<List<CategoryDataDTO>> getCategory() {
+        try {
+            return ResponseEntity.ok(categoryService.findAll());
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }

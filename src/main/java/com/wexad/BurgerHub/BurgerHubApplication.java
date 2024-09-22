@@ -36,7 +36,7 @@ public class BurgerHubApplication {
     public OpenAPI springOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("BurgerHubApplication")
+                        .title("FoodDelivery")
                         .description("This document is designed to explain the project")
                         .version("1.0.0")
                         .contact(new Contact()
@@ -62,6 +62,4 @@ public class BurgerHubApplication {
                                 .scheme("bearer")
                                 .bearerFormat("JWT")));
     }
-
-
 }

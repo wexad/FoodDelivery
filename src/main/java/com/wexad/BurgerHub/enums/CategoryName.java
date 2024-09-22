@@ -1,5 +1,47 @@
 package com.wexad.BurgerHub.enums;
 public enum CategoryName {
-    DRINK, FOOD, DESSERT
+    BURGER,
+    PIZZA,
+    HOT_DOG,
+    FRIED_CHICKEN,
+    TACO,
+    SANDWICH,
+    WRAP,
+    BURRITO,
+    NACHOS,
+    QUESADILLA,
+    CHICKEN_NUGGETS,
+    CHICKEN_WINGS,
+    FRENCH_FRIES,
+    ONION_RINGS,
+    FISH_AND_CHIPS,
+    DONUT,
+    PANCAKE,
+    WAFFLE,
+    SUBMARINE_SANDWICH,
+    CHILI_DOG,
+    CORN_DOG,
+    CHEESESTEAK,
+    SLOPPY_JOE,
+    SOFT_PRETZEL,
+    BAKED_POTATO,
+    MOZZARELLA_STICKS,
+    MAC_AND_CHEESE,
+    GRILLED_CHEESE,
+    SHAWARMA,
+    FALAFEL,
+    SUSHI_ROLL,
+    GYRO,
+    BOWL, // e.g., rice or salad bowls
+    CALZONE,
+    POUTINE,
+    BBQ_RIBS,
+    CHICKEN_TENDERS,
+    CHURROS,
+    FROZEN_YOGURT,
+    ICE_CREAM,
+    SMOOTHIE,
+    MILKSHAKE
 }
+
 

@@ -23,7 +23,7 @@ public abstract class Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-/*    @Column(nullable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT NOW()")
+    @Column(nullable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT NOW()")
     @CreatedDate
     private LocalDateTime createdAt;
 
@@ -37,7 +37,7 @@ public abstract class Auditable {
 
     @Column(name = "updated_by")
     @LastModifiedBy
-    private Long updatedBy;*/
+    private Long updatedBy;
     @Column(name = "deleted", nullable = false)
     private boolean deleted = false;
 

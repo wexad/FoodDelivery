@@ -14,6 +14,7 @@ public interface ProductDataMapper {
 
     @Mapping(source = "category.id", target = "categoryDataDTO.id")
     @Mapping(source = "category.categoryName", target = "categoryDataDTO.name") // Ensure this is mapped
+    @Mapping(source = "category.image.path", target = "categoryDataDTO.path") // Ensure this is mapped
     @Mapping(source = "image.path", target = "imageDTO.path")
     @Mapping(source = "compound.weight", target = "weight")
     ProductDataDTO toDto(Product product);

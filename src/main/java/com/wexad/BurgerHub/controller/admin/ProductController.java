@@ -6,6 +6,12 @@ import com.wexad.BurgerHub.enums.Size;
 import com.wexad.BurgerHub.handler.exceptions.ProductNotFoundException;
 import com.wexad.BurgerHub.model.*;
 import com.wexad.BurgerHub.service.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,6 +27,8 @@ import static com.wexad.BurgerHub.mapper.CompoundMapper.COMPOUND_MAPPER;
 @RestController
 @PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/admin/product")
+@Tag(name = "Admin Product Controller", description = "Manage products in the system by the admin")
+
 public class ProductController {
 
     private final CategoryService categoryService;
@@ -38,6 +46,12 @@ public class ProductController {
         this.productService = productService;
     }
 
+
+    @Operation(summary = "Create a new product", description = "Allows the admin to create a new product by providing details and uploading an image.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Product created successfully"),
+            @ApiResponse(responseCode = "500", description = "Error creating product")
+    })
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createProduct(
             @RequestParam String name,
@@ -66,6 +80,13 @@ public class ProductController {
         }
     }
 
+
+    @Operation(summary = "Get product details", description = "Retrieve details of a product by its ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product retrieved successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Product not found")
+    })
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> getProduct(@PathVariable Long id) {
         try {
@@ -76,6 +97,12 @@ public class ProductController {
     }
 
 
+    @Operation(summary = "Delete a product", description = "Allows the admin to delete a product by its ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Product not found"),
+            @ApiResponse(responseCode = "500", description = "Error deleting product")
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable Long id) {
         try {
@@ -88,7 +115,14 @@ public class ProductController {
         }
     }
 
-    @PutMapping(value = "/{id}", consumes = "multipart/form-data")
+
+    @Operation(summary = "Update a product", description = "Allows the admin to update a product's details by its ID. Optionally, a new image can be uploaded.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product updated successfully"),
+            @ApiResponse(responseCode = "404", description = "Product not found"),
+            @ApiResponse(responseCode = "500", description = "Error updating product")
+    })
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateProduct(
             @PathVariable Long id,
             @RequestParam String name,

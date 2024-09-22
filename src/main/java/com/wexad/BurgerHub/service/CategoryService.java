@@ -1,10 +1,13 @@
 package com.wexad.BurgerHub.service;
 
 import com.wexad.BurgerHub.dto.CategoryDTO;
+import com.wexad.BurgerHub.dto.CategoryDataDTO;
 import com.wexad.BurgerHub.model.Category;
 import com.wexad.BurgerHub.repository.CategoryRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static com.wexad.BurgerHub.mapper.CategoryMapper.CATEGORY_MAPPER;
 
@@ -43,6 +46,11 @@ public class CategoryService {
     public Category findById(Long categoryId) {
         return categoryRepository.findById(categoryId).orElseThrow(() ->
                 new EntityNotFoundException("Category not found"));
+    }
+
+    public List<CategoryDataDTO> findAll() {
+        List<Category> categories = categoryRepository.findAll();
+        return CATEGORY_MAPPER.toDataDTOList(categories);
     }
 }
 

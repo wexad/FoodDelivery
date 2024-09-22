@@ -17,14 +17,15 @@ public class RefreshTokenService {
     private final AuthUserService authUserService;
     private final JwtTokenUtil jwtTokenUtil;
     private final CustomUserDetailsService customUserDetailsService;
-    private static final Integer REFRESH_TOKEN_EXPIRES_IN = 1000 * 60 * 60;
-    private static final Integer ACCESS_TOKEN_EXPIRES_IN = 1000 * 60;
+    private static final Integer REFRESH_TOKEN_EXPIRES_IN = 1000 * 60 * 60 * 24 * 7;
+    private static final Integer ACCESS_TOKEN_EXPIRES_IN = 1000 * 60 * 5;
 
     public RefreshTokenService(RefreshTokenRepository refreshTokenRepository, AuthUserService authUserService, JwtTokenUtil jwtTokenUtil, CustomUserDetailsService customUserDetailsService) {
         this.refreshTokenRepository = refreshTokenRepository;
         this.authUserService = authUserService;
         this.jwtTokenUtil = jwtTokenUtil;
         this.customUserDetailsService = customUserDetailsService;
+
     }
 
     public void save(String refreshToken, Long userId) {
