@@ -22,16 +22,18 @@ public class OrderService {
     private final SessionUser sessionUser;
     private final PaymentService paymentService;
     private final ProductService productService;
+    private final OrderItemService orderItemService;
 
-    public OrderService(OrderRepository orderRepository, AuthUserService authUserService, SessionUser sessionUser, PaymentService paymentService, ProductService productService) {
+    public OrderService(OrderRepository orderRepository, AuthUserService authUserService, SessionUser sessionUser, PaymentService paymentService, ProductService productService, OrderItemService orderItemService) {
         this.orderRepository = orderRepository;
         this.authUserService = authUserService;
         this.sessionUser = sessionUser;
         this.paymentService = paymentService;
         this.productService = productService;
+        this.orderItemService = orderItemService;
     }
 
-    public void save(OrderRequestDTO orders) {
+    public void save(CardDTO cardDTO) {
         AuthUser authUser = authUserService.findById(sessionUser.id())
                 .orElseThrow(() -> new UserNotFoundException("User Not Found"));
 
@@ -39,13 +41,15 @@ public class OrderService {
             throw new RequiredAddressException("First, you have to enter your address on your profile.");
         }
         LocalDateTime now = LocalDateTime.now();
-        Payment payment = new Payment(PaymentType.CARD, orders.cardNumber(), now);
+        Payment payment = new Payment(PaymentType.CARD, cardDTO.cardNumber(), now);
         paymentService.save(payment);
-        for (ProductOrder order : orders.orders()) {
-            Product product = productService.getProduct(order.id());
+        List<OrderItemDTO> orderItems = orderItemService.getOrderItems();
+        for (OrderItemDTO order : orderItems) {
+            Product product = productService.getProduct(order.productId());
             Order ordered = new Order(product, payment, authUser, order.count());
             orderRepository.save(ordered);
         }
+        orderItemService.deleteCardItems();
     }
 
     public Map<LocalDateTime, List<ArchiveDTO>> getOrders() {

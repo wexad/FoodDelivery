@@ -25,6 +25,10 @@ public class SessionUser {
     public AuthUser user() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         Authentication authentication = securityContext.getAuthentication();
+
+        if (authentication == null) {
+            return null;
+        }
         Object principal = authentication.getPrincipal();
         if (principal instanceof AuthUser authUser) {
             return authUser;

@@ -30,13 +30,15 @@ public class AuthController {
     private final AuthUserService authUserService;
     private final CategoryService categoryService;
     private final ProductService productService;
+    private final OrderItemService orderItemService;
 
-    public AuthController(PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, CustomUserDetailsService customUserDetailsService, RefreshTokenService refreshTokenService, RefreshTokenService refreshTokenService1, AuthUserService authUserService, CategoryService categoryService, ProductService productService) {
+    public AuthController(PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, CustomUserDetailsService customUserDetailsService, RefreshTokenService refreshTokenService, RefreshTokenService refreshTokenService1, AuthUserService authUserService, CategoryService categoryService, ProductService productService, OrderItemService orderItemService) {
         this.authenticationManager = authenticationManager;
         this.refreshTokenService = refreshTokenService1;
         this.authUserService = authUserService;
         this.categoryService = categoryService;
         this.productService = productService;
+        this.orderItemService = orderItemService;
     }
 
 
@@ -61,7 +63,8 @@ public class AuthController {
         Tokens tokens = refreshTokenService.getTokens(user);
         List<CategoryDataDTO> categories = categoryService.findAll();
         List<ProductDataDTO> products = productService.getProducts();
-        return ResponseEntity.ok(new LoginDTO(tokens, categories, products));
+        List<OrderItemDTO> orderItems = orderItemService.getOrderItems();
+        return ResponseEntity.ok(new LoginDTO(tokens, categories, products, orderItems));
     }
 
 
