@@ -23,6 +23,19 @@ public class OrderItemService {
         this.productService = productService;
     }
 
+    public void minusProduct(Long productId) {
+        List<OrderItem> allByUserId = orderItemRepository.findAllByUserId(sessionUser.id());
+        for (OrderItem orderItem : allByUserId) {
+            if (orderItem.getProduct().getId().equals(productId)) {
+                if (orderItem.getCount() == 1) {
+                    orderItemRepository.delete(orderItem);
+                } else {
+                    orderItem.setCount(orderItem.getCount() - 1);
+                    orderItemRepository.save(orderItem);
+                }
+            }
+        }
+    }
     public void addProduct(Long productId) {
         AtomicReference<Boolean> isExists = new AtomicReference<>(false);
         List<OrderItem> orderItemList = orderItemRepository.findAllByUserId(sessionUser.id());
@@ -56,4 +69,6 @@ public class OrderItemService {
         Long userId = sessionUser.id();
         orderItemRepository.deleteByUserId(userId);
     }
+
+
 }

@@ -54,7 +54,7 @@ public class HomeController {
             @ApiResponse(responseCode = "400", description = "Invalid file format or upload error")
     })
     @PostMapping(value = "/home", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> saveImage(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> saveImage(@RequestParam("file") MultipartFile file) {
         authUserService.saveImage(file);
         return ResponseEntity.status(HttpStatus.CREATED).body("Image saved successfully");
     }
@@ -66,7 +66,7 @@ public class HomeController {
             @ApiResponse(responseCode = "400", description = "Password validation error")
     })
     @PutMapping("/home")
-    public ResponseEntity<?> resetPassword(@RequestBody PasswordDTO passwordDTO) {
+    public ResponseEntity<String> resetPassword(@RequestBody PasswordDTO passwordDTO) {
         authUserService.resetPassword(passwordDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body("Password reset successfully");
     }
@@ -78,7 +78,7 @@ public class HomeController {
             @ApiResponse(responseCode = "400", description = "Invalid address information")
     })
     @PutMapping("/home/address")
-    public ResponseEntity<?> changeAddress(@RequestBody AddressDTO addressDTO) {
+    public ResponseEntity<String> changeAddress(@RequestBody AddressDTO addressDTO) {
         authUserService.changeAddress(addressDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body("Address changed successfully");
     }

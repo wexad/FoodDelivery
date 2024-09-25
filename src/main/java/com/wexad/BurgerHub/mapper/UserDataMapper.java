@@ -12,6 +12,7 @@ public interface UserDataMapper {
 
     UserDataMapper USER_DATA_MAPPER = Mappers.getMapper(UserDataMapper.class);
 
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "isAdmin", expression = "java(isAdmin(authUser))")
     UserDataDTO toUserDataDTO(AuthUser authUser);
 
