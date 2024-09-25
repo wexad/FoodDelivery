@@ -53,7 +53,7 @@ public class ProductController {
             @ApiResponse(responseCode = "500", description = "Error creating product")
     })
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> createProduct(
+    public ResponseEntity<String> createProduct(
             @RequestParam String name,
             @RequestParam String description,
             @RequestParam Double price,
@@ -123,7 +123,7 @@ public class ProductController {
             @ApiResponse(responseCode = "500", description = "Error updating product")
     })
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> updateProduct(
+    public ResponseEntity<String> updateProduct(
             @PathVariable Long id,
             @RequestParam String name,
             @RequestParam String description,

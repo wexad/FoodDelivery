@@ -40,9 +40,8 @@ public class OrderController {
             @ApiResponse(responseCode = "404", description = "Category not found")
     })
     @GetMapping("/{categoryId}")
-    public ResponseEntity<?> getProductsByCategoryId(@PathVariable Long categoryId) {
-        List<CategoryDataDTO> categories = categoryService.findAll();
-        return ResponseEntity.ok(new MenuDTO(categories, productService.getProductsByCategoryId(categoryId), orderItemService.getOrderItems()));
+    public ResponseEntity<List<ProductDataDTO>> getProductsByCategoryId(@PathVariable Long categoryId) {
+        return ResponseEntity.ok(productService.getProductsByCategoryId(categoryId));
     }
 
     @Operation(summary = "Place an Order", description = "Enter array of (productId and countSubmits) and cardNumber a new order based on the provided order details")
@@ -51,7 +50,7 @@ public class OrderController {
             @ApiResponse(responseCode = "400", description = "Invalid order details provided")
     })
     @PostMapping
-    public ResponseEntity<?> order(@RequestBody CardDTO cardDTO) {
+    public ResponseEntity<LoginDTO> order(@RequestBody CardDTO cardDTO) {
         orderService.save(cardDTO);
         List<CategoryDataDTO> categories = categoryService.findAll();
         List<ProductDataDTO> products = productService.getProducts();
@@ -84,6 +83,11 @@ public class OrderController {
     @PostMapping("/addOrderItem/")
     public List<OrderItemDTO> addProduct(@RequestParam("productId") Long productId) {
         orderItemService.addProduct(productId);
+        return orderItemService.getOrderItems();
+    }
+    @PostMapping("/minusOrderItem/")
+    public List<OrderItemDTO> minusProduct(@RequestParam("productId") Long productId) {
+        orderItemService.minusProduct(productId);
         return orderItemService.getOrderItems();
     }
 }
