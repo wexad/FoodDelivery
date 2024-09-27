@@ -23,7 +23,6 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/admin/category")
 public class CategoryController {
 
@@ -41,6 +40,7 @@ public class CategoryController {
             @ApiResponse(responseCode = "201", description = "Category created successfully"),
             @ApiResponse(responseCode = "500", description = "Failed to create category")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> createCategory(@RequestParam("categoryName") String categoryName,
                                                  @RequestParam("description") String description,
@@ -61,6 +61,7 @@ public class CategoryController {
             @ApiResponse(responseCode = "200", description = "Category updated successfully"),
             @ApiResponse(responseCode = "500", description = "Failed to update category")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping(value = "/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<String> updateCategory(@PathVariable Long id,
                                                  @RequestParam("categoryName") String categoryName,
@@ -86,6 +87,7 @@ public class CategoryController {
             }),
             @ApiResponse(responseCode = "404", description = "Category not found")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDTO> getCategory(@PathVariable Long id) {
         try {
@@ -103,6 +105,7 @@ public class CategoryController {
             }),
             @ApiResponse(responseCode = "404", description = "No categories found")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/")
     public ResponseEntity<List<CategoryDataDTO>> getCategory() {
         try {
@@ -117,6 +120,7 @@ public class CategoryController {
             @ApiResponse(responseCode = "200", description = "Category deleted successfully"),
             @ApiResponse(responseCode = "500", description = "Failed to delete category")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteCategory(@PathVariable Long id) {
         try {

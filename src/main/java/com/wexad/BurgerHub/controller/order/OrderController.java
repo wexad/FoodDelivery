@@ -34,15 +34,24 @@ public class OrderController {
         this.orderItemService = orderItemService;
     }
 
+    @Operation(summary = "Get All Categories", description = "Fetches a list of all product categories")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Categories fetched successfully")
+    })
+    @GetMapping("/all")
+    public ResponseEntity<List<CategoryDataDTO>> getAllCategories() {
+        return ResponseEntity.ok(categoryService.findAll());
+    }
     @Operation(summary = "Get Products by Category", description = "Fetches a list of products belonging to a specific category")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Products fetched successfully"),
             @ApiResponse(responseCode = "404", description = "Category not found")
     })
-    @GetMapping("/{categoryId}")
-    public ResponseEntity<List<ProductDataDTO>> getProductsByCategoryId(@PathVariable Long categoryId) {
+    @GetMapping("/get/{categoryId}")
+    public ResponseEntity<List<ProductDataDTO>> getProductsByCategoryId(@PathVariable(required = false) Long categoryId) {
         return ResponseEntity.ok(productService.getProductsByCategoryId(categoryId));
     }
+
 
     @Operation(summary = "Place an Order", description = "Enter array of (productId and countSubmits) and cardNumber a new order based on the provided order details")
     @ApiResponses(value = {
@@ -81,13 +90,32 @@ public class OrderController {
                     content = @Content)
     })
     @PostMapping("/addOrderItem/")
-    public List<OrderItemDTO> addProduct(@RequestParam("productId") Long productId) {
+    public ResponseEntity<List<OrderItemDTO>> addProduct(@RequestParam("productId") Long productId) {
         orderItemService.addProduct(productId);
-        return orderItemService.getOrderItems();
+        return ResponseEntity.ok(orderItemService.getOrderItems());
     }
+    @Operation(summary = "Minus product to the order", description = "Minus a product to the current order by providing the product ID. Returns the updated list of order items.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product added successfully",
+                    content = { @Content(mediaType = "application/json") }),
+            @ApiResponse(responseCode = "404", description = "Product not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid request",
+                    content = @Content)
+    })
     @PostMapping("/minusOrderItem/")
-    public List<OrderItemDTO> minusProduct(@RequestParam("productId") Long productId) {
+    public ResponseEntity<List<OrderItemDTO>> minusProduct(@RequestParam("productId") Long productId) {
         orderItemService.minusProduct(productId);
-        return orderItemService.getOrderItems();
+        return ResponseEntity.ok(orderItemService.getOrderItems());
+    }
+
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Get OrderItems",
+                    content = { @Content(mediaType = "application/json") }),
+            @ApiResponse(responseCode = "400", description = "Invalid request",
+                    content = @Content)
+    })
+    @GetMapping("/orderItems")
+    public ResponseEntity<List<OrderItemDTO>> getOrderItems() {
+        return ResponseEntity.ok(orderItemService.getOrderItems());
     }
 }

@@ -55,7 +55,7 @@ public class AuthController {
             @ApiResponse(responseCode = "401", description = "Invalid username or password")
     })
     @PostMapping("/login")
-    public ResponseEntity<LoginDTO> getTokens(@RequestBody AuthUserDTO user) {
+    public ResponseEntity<LoginDTOWithoutOrderItems> getTokens(@RequestBody AuthUserDTO user) {
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(user.username(), user.password());
         authenticationManager.authenticate(authenticationToken);
@@ -64,7 +64,7 @@ public class AuthController {
         List<CategoryDataDTO> categories = categoryService.findAll();
         List<ProductDataDTO> products = productService.getProducts();
         List<OrderItemDTO> orderItems = orderItemService.getOrderItems();
-        return ResponseEntity.ok(new LoginDTO(tokens, categories, products, orderItems));
+        return ResponseEntity.ok(new LoginDTOWithoutOrderItems(tokens, categories, products));
     }
 
 

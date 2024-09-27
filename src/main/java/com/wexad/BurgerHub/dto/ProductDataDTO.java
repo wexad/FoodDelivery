@@ -1,5 +1,5 @@
 package com.wexad.BurgerHub.dto;
 
-public record ProductDataDTO(Long id, CategoryDataDTO categoryDataDTO, Double price, String description,
+public record ProductDataDTO(Long id, Double price, String name,
                              ImageDTO imageDTO, Double weight) {
 }
