@@ -42,6 +42,7 @@ public class OrderController {
     public ResponseEntity<List<CategoryDataDTO>> getAllCategories() {
         return ResponseEntity.ok(categoryService.findAll());
     }
+
     @Operation(summary = "Get Products by Category", description = "Fetches a list of products belonging to a specific category")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Products fetched successfully"),
@@ -84,7 +85,7 @@ public class OrderController {
     @Operation(summary = "Add product to the order", description = "Adds a product to the current order by providing the product ID. Returns the updated list of order items.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Product added successfully",
-                    content = { @Content(mediaType = "application/json") }),
+                    content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", description = "Product not found"),
             @ApiResponse(responseCode = "400", description = "Invalid request",
                     content = @Content)
@@ -92,12 +93,13 @@ public class OrderController {
     @PostMapping("/addOrderItem/")
     public ResponseEntity<List<OrderItemDTO>> addProduct(@RequestParam("productId") Long productId) {
         orderItemService.addProduct(productId);
-        return ResponseEntity.ok(orderItemService.getOrderItems());
+        return new ResponseEntity<>(orderItemService.getOrderItems(), HttpStatus.OK);
     }
+
     @Operation(summary = "Minus product to the order", description = "Minus a product to the current order by providing the product ID. Returns the updated list of order items.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Product added successfully",
-                    content = { @Content(mediaType = "application/json") }),
+                    content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", description = "Product not found"),
             @ApiResponse(responseCode = "400", description = "Invalid request",
                     content = @Content)
@@ -105,17 +107,17 @@ public class OrderController {
     @PostMapping("/minusOrderItem/")
     public ResponseEntity<List<OrderItemDTO>> minusProduct(@RequestParam("productId") Long productId) {
         orderItemService.minusProduct(productId);
-        return ResponseEntity.ok(orderItemService.getOrderItems());
+        return new ResponseEntity<>(orderItemService.getOrderItems(), HttpStatus.OK);
     }
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Get OrderItems",
-                    content = { @Content(mediaType = "application/json") }),
+                    content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "400", description = "Invalid request",
                     content = @Content)
     })
     @GetMapping("/orderItems")
     public ResponseEntity<List<OrderItemDTO>> getOrderItems() {
-        return ResponseEntity.ok(orderItemService.getOrderItems());
+        return new ResponseEntity<>(orderItemService.getOrderItems(), HttpStatus.OK);
     }
 }

@@ -18,6 +18,7 @@ public interface OrderMapper {
     @Mapping(source = "product.name", target = "productName")
     @Mapping(source = "product.compound.weight", target = "weight")
     @Mapping(source = "count", target = "count")
+    @Mapping(source = "product.price", target = "price")
     OrderItemDTO toDto(OrderItem orderItem);
 
     @InheritInverseConfiguration
