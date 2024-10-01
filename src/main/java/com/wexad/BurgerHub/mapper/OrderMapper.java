@@ -13,7 +13,8 @@ import java.util.List;
 public interface OrderMapper {
     OrderMapper ORDER_ITEM_MAPPER = Mappers.getMapper(OrderMapper.class);
 
-    @Mapping(source = "id", target = "productId")
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "product.id", target = "productId")
     @Mapping(source = "product.image.path", target = "imagePath")
     @Mapping(source = "product.name", target = "productName")
     @Mapping(source = "product.compound.weight", target = "weight")

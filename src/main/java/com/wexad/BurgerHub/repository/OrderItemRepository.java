@@ -8,10 +8,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
     @Query("SELECT oi FROM order_item oi WHERE oi.user.id = :id")
     List<OrderItem> findAllByUserId(@Param("id") Long id);
+
+
+    @Query("SELECT oi FROM order_item oi WHERE oi.user.id = :userId AND oi.product.id = :productId")
+    Optional<OrderItem> findByUserIdAndProductId(@Param("userId") Long userId, @Param("productId") Long productId);
+
 
     @Modifying
     @Transactional

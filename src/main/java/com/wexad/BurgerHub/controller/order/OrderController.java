@@ -91,9 +91,9 @@ public class OrderController {
                     content = @Content)
     })
     @PostMapping("/addOrderItem/")
-    public ResponseEntity<List<OrderItemDTO>> addProduct(@RequestParam("productId") Long productId) {
+    public ResponseEntity<BasketDTO> addProduct(@RequestParam("productId") Long productId) {
         orderItemService.addProduct(productId);
-        return new ResponseEntity<>(orderItemService.getOrderItems(), HttpStatus.OK);
+        return new ResponseEntity<>(orderItemService.getBasket(), HttpStatus.OK);
     }
 
     @Operation(summary = "Minus product to the order", description = "Minus a product to the current order by providing the product ID. Returns the updated list of order items.")
@@ -105,9 +105,9 @@ public class OrderController {
                     content = @Content)
     })
     @PostMapping("/minusOrderItem/")
-    public ResponseEntity<List<OrderItemDTO>> minusProduct(@RequestParam("productId") Long productId) {
+    public ResponseEntity<BasketDTO> minusProduct(@RequestParam("productId") Long productId) {
         orderItemService.minusProduct(productId);
-        return new ResponseEntity<>(orderItemService.getOrderItems(), HttpStatus.OK);
+        return new ResponseEntity<>(orderItemService.getBasket(), HttpStatus.OK);
     }
 
     @ApiResponses(value = {
@@ -117,7 +117,7 @@ public class OrderController {
                     content = @Content)
     })
     @GetMapping("/orderItems")
-    public ResponseEntity<List<OrderItemDTO>> getOrderItems() {
-        return new ResponseEntity<>(orderItemService.getOrderItems(), HttpStatus.OK);
+    public ResponseEntity<BasketDTO> getOrderItems() {
+        return new ResponseEntity<>(orderItemService.getBasket(), HttpStatus.OK);
     }
 }
