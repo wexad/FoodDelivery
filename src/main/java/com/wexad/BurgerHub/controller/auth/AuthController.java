@@ -2,12 +2,12 @@ package com.wexad.BurgerHub.controller.auth;
 
 import com.wexad.BurgerHub.dto.*;
 import com.wexad.BurgerHub.security.JwtTokenUtil;
+import com.wexad.BurgerHub.security.SessionUser;
 import com.wexad.BurgerHub.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,14 +31,18 @@ public class AuthController {
     private final CategoryService categoryService;
     private final ProductService productService;
     private final OrderItemService orderItemService;
+    private final SessionUser sessionUser;
+    private final RoleService roleService;
 
-    public AuthController(PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, CustomUserDetailsService customUserDetailsService, RefreshTokenService refreshTokenService, RefreshTokenService refreshTokenService1, AuthUserService authUserService, CategoryService categoryService, ProductService productService, OrderItemService orderItemService) {
+    public AuthController(PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, CustomUserDetailsService customUserDetailsService, RefreshTokenService refreshTokenService, RefreshTokenService refreshTokenService1, AuthUserService authUserService, CategoryService categoryService, ProductService productService, OrderItemService orderItemService, SessionUser sessionUser, RoleService roleService) {
         this.authenticationManager = authenticationManager;
         this.refreshTokenService = refreshTokenService1;
         this.authUserService = authUserService;
         this.categoryService = categoryService;
         this.productService = productService;
         this.orderItemService = orderItemService;
+        this.sessionUser = sessionUser;
+        this.roleService = roleService;
     }
 
 
@@ -55,16 +59,16 @@ public class AuthController {
             @ApiResponse(responseCode = "401", description = "Invalid username or password")
     })
     @PostMapping("/login")
-    public ResponseEntity<LoginDTOWithoutOrderItems> getTokens(@RequestBody AuthUserDTO user) {
+    public ResponseEntity<LoginDTOWithRole> getTokens(@RequestBody UserPassDTO user) {
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(user.username(), user.password());
         authenticationManager.authenticate(authenticationToken);
-        authUserService.isDeleted(user);
-        Tokens tokens = refreshTokenService.getTokens(user);
-        List<CategoryDataDTO> categories = categoryService.findAll();
-        List<ProductDataDTO> products = productService.getProducts();
-        List<OrderItemDTO> orderItems = orderItemService.getOrderItems();
-        return ResponseEntity.ok(new LoginDTOWithoutOrderItems(tokens, categories, products));
+        AuthUserDTO authUserDTO = new AuthUserDTO(user.username(), user.password(), null);
+        authUserService.isDeleted(authUserDTO);
+        Tokens tokens = refreshTokenService.getTokens(authUserDTO);
+        List<String> roles = roleService.getRoles(user.username());
+        String role = roles.size() > 1 ? roles.get(0) : roles.get(1);
+        return ResponseEntity.ok(new LoginDTOWithRole(tokens, role));
     }
 
 
@@ -74,9 +78,17 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "Invalid user data")
     })
     @PostMapping("/signup")
-    public void register(@RequestBody AuthUserDTO user) {
+    public ResponseEntity<LoginDTOWithRole> register(@RequestBody AuthUserDTO user) {
         authUserService.save(user);
-        ResponseEntity.status(HttpStatus.CREATED).body("Successfully registered");
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(user.username(), user.password());
+        authenticationManager.authenticate(authenticationToken);
+        AuthUserDTO authUserDTO = new AuthUserDTO(user.username(), user.password(), null);
+        authUserService.isDeleted(authUserDTO);
+        Tokens tokens = refreshTokenService.getTokens(authUserDTO);
+        List<String> roles = roleService.getRoles(user.username());
+        String role = roles.size() > 1 ? roles.get(0) : roles.get(1);
+        return ResponseEntity.ok(new LoginDTOWithRole(tokens, role));
     }
 
     @Operation(summary = "Refresh tokens", description = "Refreshes the access token using a valid refresh token.")

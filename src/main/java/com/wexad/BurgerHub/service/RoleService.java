@@ -4,25 +4,23 @@ import com.wexad.BurgerHub.enums.RoleName;
 import com.wexad.BurgerHub.model.AuthUser;
 import com.wexad.BurgerHub.model.Role;
 import com.wexad.BurgerHub.repository.RoleRepository;
-import jakarta.transaction.Transactional;
-import org.springframework.boot.CommandLineRunner;
+import com.wexad.BurgerHub.security.SessionUser;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class RoleService {
     private final RoleRepository roleRepository;
     private final AuthUserService authUserService;
-    private final PasswordEncoder passwordEncoder;
+    private final SessionUser sessionUser;
 
-    public RoleService(RoleRepository roleRepository, @Lazy AuthUserService authUserService, PasswordEncoder passwordEncoder, PasswordEncoder passwordEncoder1) {
+    public RoleService(RoleRepository roleRepository, @Lazy AuthUserService authUserService,@Lazy SessionUser sessionUser) {
         this.roleRepository = roleRepository;
         this.authUserService = authUserService;
-        this.passwordEncoder = passwordEncoder1;
+        this.sessionUser = sessionUser;
     }
 
     public void addAdminRoleToUser(Long userId) {
@@ -43,4 +41,12 @@ public class RoleService {
     }
 
 
+    public List<String> getRoles(String username) {
+        List<String> roles = new ArrayList<>();
+        AuthUser authUser = authUserService.findByUsername(authUserService.getUserById(authUserService.getIdWithUsername(username)).username()).orElseThrow(() -> new RuntimeException("User not found"));
+        Arrays.stream(authUser.getRoles().toArray(new Role[0]))
+                .map(role -> role.getName().toString())
+                .forEach(roles::add);
+        return roles;
+    }
 }

@@ -2,7 +2,6 @@ package com.wexad.BurgerHub.controller.admin;
 
 import com.wexad.BurgerHub.dto.CompoundDTO;
 import com.wexad.BurgerHub.dto.ProductDTO;
-import com.wexad.BurgerHub.enums.Size;
 import com.wexad.BurgerHub.handler.exceptions.ProductNotFoundException;
 import com.wexad.BurgerHub.model.*;
 import com.wexad.BurgerHub.service.*;
@@ -67,7 +66,7 @@ public class ProductController {
             @RequestPart("image") MultipartFile imageFile) {
         try {
             String imagePath = storageService.uploadFile(imageFile, PRODUCTS_URL);
-            CompoundDTO compoundDTO = new CompoundDTO(weight, Size.valueOf(size), calories, fat, protein);
+            CompoundDTO compoundDTO = new CompoundDTO(weight, calories, fat, protein);
             Compound compound = compoundService.save(COMPOUND_MAPPER.toEntity(compoundDTO));
             Category category = categoryService.findById(categoryId);
             Restaurant restaurant = restaurantService.findById(restaurantId);
@@ -141,7 +140,7 @@ public class ProductController {
             existingProduct.setName(name);
             existingProduct.setDescription(description);
             existingProduct.setPrice(price);
-            CompoundDTO compoundDTO = new CompoundDTO(weight, Size.valueOf(size), calories, fat, protein);
+            CompoundDTO compoundDTO = new CompoundDTO(weight,  calories, fat, protein);
             Compound updatedCompound = compoundService.save(COMPOUND_MAPPER.toEntity(compoundDTO));
             existingProduct.setCompound(updatedCompound);
             Category category = categoryService.findById(categoryId);

@@ -3,7 +3,6 @@ package com.wexad.BurgerHub.model;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import com.wexad.BurgerHub.enums.Size;
 
 @Setter
 @Getter
@@ -15,9 +14,6 @@ import com.wexad.BurgerHub.enums.Size;
 public class Compound extends Auditable {
 
     private Double weight;
-
-    @Enumerated(EnumType.STRING)
-    private Size size;
 
     private Long calories;
     private Long fat;
