@@ -39,17 +39,6 @@ public class UserController {
         return ResponseEntity.ok("Admin role added to user with id: " + id);
     }
 
-    @Operation(summary = "Create a new user", description = "Creates a new user by providing their details.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "User created successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid user data")
-    })
-    @PostMapping("/")
-    public ResponseEntity<String> createUser(@RequestBody AuthUserDTO user) {
-        authUserService.save(user);
-        return new ResponseEntity<>("User created successfully", HttpStatus.CREATED);
-    }
-
     @Operation(summary = "Delete a user", description = "Deletes a user by their ID.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User deleted successfully"),

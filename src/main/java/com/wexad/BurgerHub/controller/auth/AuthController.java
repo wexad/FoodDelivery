@@ -1,6 +1,7 @@
 package com.wexad.BurgerHub.controller.auth;
 
 import com.wexad.BurgerHub.dto.*;
+import com.wexad.BurgerHub.enums.RoleName;
 import com.wexad.BurgerHub.security.JwtTokenUtil;
 import com.wexad.BurgerHub.security.SessionUser;
 import com.wexad.BurgerHub.service.*;
@@ -67,7 +68,7 @@ public class AuthController {
         authUserService.isDeleted(authUserDTO);
         Tokens tokens = refreshTokenService.getTokens(authUserDTO);
         List<String> roles = roleService.getRoles(user.username());
-        String role = roles.size() > 1 ? roles.get(0) : roles.get(1);
+        String role = roles.size() > 1 ? RoleName.ADMIN.name() : RoleName.USER.name();
         return ResponseEntity.ok(new LoginDTOWithRole(tokens, role));
     }
 
@@ -86,9 +87,7 @@ public class AuthController {
         AuthUserDTO authUserDTO = new AuthUserDTO(user.username(), user.password(), null);
         authUserService.isDeleted(authUserDTO);
         Tokens tokens = refreshTokenService.getTokens(authUserDTO);
-        List<String> roles = roleService.getRoles(user.username());
-        String role = roles.size() > 1 ? roles.get(0) : roles.get(1);
-        return ResponseEntity.ok(new LoginDTOWithRole(tokens, role));
+        return ResponseEntity.ok(new LoginDTOWithRole(tokens, RoleName.USER.name()));
     }
 
     @Operation(summary = "Refresh tokens", description = "Refreshes the access token using a valid refresh token.")
