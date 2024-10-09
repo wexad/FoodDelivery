@@ -10,7 +10,6 @@ import com.wexad.BurgerHub.model.AuthUser;
 import com.wexad.BurgerHub.model.Image;
 import com.wexad.BurgerHub.model.Role;
 import com.wexad.BurgerHub.repository.AuthUserRepository;
-import com.wexad.BurgerHub.repository.ImageRepository;
 import com.wexad.BurgerHub.security.SessionUser;
 import jakarta.transaction.Transactional;
 import org.springframework.context.annotation.Lazy;
@@ -23,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.wexad.BurgerHub.mapper.AddressMapper.ADDRESS_MAPPER;
+import static com.wexad.BurgerHub.mapper.UserAddressMapper.USER_ADDRESS_MAPPER;
 import static com.wexad.BurgerHub.mapper.UserDataMapper.USER_DATA_MAPPER;
 import static com.wexad.BurgerHub.mapper.UserMapper.USER_MAPPER;
 
@@ -82,9 +82,25 @@ public class AuthUserService {
         UserMapper.toUserDto(findById(id).orElseThrow(() -> new UserNotFoundException("User Not Found")));
         authUserRepository.updateDeletedBy(id);
     }
+    public void restoreUser(Long id) {
+        UserMapper.toUserDto(findById(id).orElseThrow(() -> new UserNotFoundException("User Not Found")));
+        authUserRepository.updateRestoredBy(id);
+    }
 
-    public List<UserDTO> getAllUsers() {
-        return USER_MAPPER.toUserDtoList(authUserRepository.findAll());
+    public List<UserAddressDTO> getAllUsers() {
+        List<AuthUser> users = authUserRepository.findAll();
+        List<UserAddressDTO> result = USER_ADDRESS_MAPPER.toDTO(users);
+
+        result.forEach(userAddressDTO -> {
+            AuthUser user = users.stream()
+                    .filter(u -> u.getId().equals(userAddressDTO.getId()))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException("User not found"));
+
+            String roleName = user.getRoles().size() > 1 ? RoleName.ADMIN.name() : RoleName.USER.name();
+            userAddressDTO.setRole(roleName);
+        });
+        return result;
     }
 
     public UserDTO getUserById(Long id) {
@@ -125,4 +141,5 @@ public class AuthUserService {
         authUser.setAddress(ADDRESS_MAPPER.toEntity(addressDTO));
         authUserRepository.save(authUser);
     }
+
 }

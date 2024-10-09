@@ -1,6 +1,7 @@
 package com.wexad.BurgerHub.controller.admin;
 
 import com.wexad.BurgerHub.dto.AuthUserDTO;
+import com.wexad.BurgerHub.dto.UserAddressDTO;
 import com.wexad.BurgerHub.dto.UserDTO;
 import com.wexad.BurgerHub.service.AuthUserService;
 import com.wexad.BurgerHub.service.RoleService;
@@ -49,6 +50,16 @@ public class UserController {
         authUserService.deleteUser(id);
         return ResponseEntity.ok("User with id: " + id + " deleted");
     }
+    @Operation(summary = "Restore deleted a user", description = "restore a user by their ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User restored successfully"),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
+    @PutMapping("/restore/{id}")
+    public ResponseEntity<String> restoreUser(@PathVariable Long id) {
+        authUserService.restoreUser(id);
+        return ResponseEntity.ok("User with id: " + id + " restored");
+    }
 
     @Operation(summary = "Get user details by ID", description = "Retrieves the details of a user by their ID.")
     @ApiResponses(value = {
@@ -65,7 +76,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "Users retrieved successfully")
     })
     @GetMapping("/")
-    public ResponseEntity<List<UserDTO>> listAllUsers() {
+    public ResponseEntity<List<UserAddressDTO>> listAllUsers() {
         return ResponseEntity.ok(authUserService.getAllUsers());
     }
 }

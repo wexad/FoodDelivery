@@ -19,6 +19,10 @@ public interface AuthUserRepository extends JpaRepository<AuthUser, Long> {
     @Modifying
     @Query("update AuthUser a set a.deleted = true where a.id = ?1")
     void updateDeletedBy(Long id);
+    @Transactional
+    @Modifying
+    @Query("update AuthUser a set a.deleted = false where a.id = ?1")
+    void updateRestoredBy(Long id);
 
     @Query("SELECT a.deleted FROM AuthUser a WHERE a.username = ?1")
     boolean isDeleted(String username);
