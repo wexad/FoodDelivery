@@ -23,10 +23,7 @@ public class StorageConfig {
 
     @Bean
     public S3Client s3Client() {
-        // Create the AWS credentials object using AWS SDK 2.x classes
         AwsBasicCredentials awsCredentials = AwsBasicCredentials.create(accessKey, accessSecret);
-
-        // Build the S3Client using AWS SDK 2.x
         return S3Client.builder()
                 .region(Region.of(region))
                 .credentialsProvider(StaticCredentialsProvider.create(awsCredentials))

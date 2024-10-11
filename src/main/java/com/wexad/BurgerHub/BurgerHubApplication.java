@@ -24,6 +24,7 @@ public class BurgerHubApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(BurgerHubApplication.class, args);
+
     }
 
     @Bean

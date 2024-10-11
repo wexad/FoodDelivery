@@ -53,7 +53,7 @@ public class StorageService {
             return "File upload failed: " + e.awsErrorDetails().errorMessage();
         } finally {
             if (fileObj.exists()) {
-                fileObj.delete(); // Clean up the temporary file
+                fileObj.delete();
             }
         }
     }
