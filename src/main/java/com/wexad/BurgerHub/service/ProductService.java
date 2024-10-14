@@ -72,4 +72,8 @@ public class ProductService {
     public Product getProduct(Long id) {
         return productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product Not Found"));
     }
+
+    public List<ProductDTO> getProductsForAdmin() {
+        return PRODUCT_MAPPER.toDTO(productRepository.findAll());
+    }
 }

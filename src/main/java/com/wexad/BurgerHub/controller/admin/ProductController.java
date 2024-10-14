@@ -20,6 +20,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 import static com.wexad.BurgerHub.mapper.CompoundMapper.COMPOUND_MAPPER;
 
 @Slf4j
@@ -57,7 +59,6 @@ public class ProductController {
             @RequestParam String description,
             @RequestParam Double price,
             @RequestParam Double weight,
-            @RequestParam String size,
             @RequestParam Long calories,
             @RequestParam Long fat,
             @RequestParam Long protein,
@@ -90,6 +91,21 @@ public class ProductController {
     public ResponseEntity<ProductDTO> getProduct(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(productService.getProductById(id));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    @Operation(summary = "Get all products", description = "products")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Products retrieved successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductDTO[].class))),
+            @ApiResponse(responseCode = "404", description = "Products not found")
+    })
+    @GetMapping("/all")
+    public ResponseEntity<List<ProductDTO>> getProducts() {
+        try {
+            return ResponseEntity.ok(productService.getProductsForAdmin());
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
@@ -128,7 +144,6 @@ public class ProductController {
             @RequestParam String description,
             @RequestParam Double price,
             @RequestParam Double weight,
-            @RequestParam String size,
             @RequestParam Long calories,
             @RequestParam Long fat,
             @RequestParam Long protein,
@@ -140,7 +155,7 @@ public class ProductController {
             existingProduct.setName(name);
             existingProduct.setDescription(description);
             existingProduct.setPrice(price);
-            CompoundDTO compoundDTO = new CompoundDTO(weight,  calories, fat, protein);
+            CompoundDTO compoundDTO = new CompoundDTO(weight, calories, fat, protein);
             Compound updatedCompound = compoundService.save(COMPOUND_MAPPER.toEntity(compoundDTO));
             existingProduct.setCompound(updatedCompound);
             Category category = categoryService.findById(categoryId);
