@@ -11,5 +11,8 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Modifying
     @Query("update Category a set a.deleted = true where a.id = ?1")
     void updateDeletedBy(Long id);
-
+    @Transactional
+    @Modifying
+    @Query("update Category a set a.deleted = false where a.id = ?1")
+    void updateRestoredBy(Long id);
 }

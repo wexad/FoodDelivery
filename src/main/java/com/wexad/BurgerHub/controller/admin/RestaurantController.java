@@ -52,12 +52,12 @@ public class RestaurantController {
             @ApiResponse(responseCode = "404", description = "Restaurant not found")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<?> get(@PathVariable Long id) {
+    public ResponseEntity<RestaurantDTO> get(@PathVariable Long id) {
         try {
             restaurantService.find(id);
             return ResponseEntity.ok(restaurantService.find(id));
         } catch (EntityNotFoundException ex) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Restaurant not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 
@@ -70,6 +70,20 @@ public class RestaurantController {
     public ResponseEntity<String> delete(@PathVariable Long id) {
         try {
             restaurantService.delete(id);
+            return ResponseEntity.ok("Restaurant deleted successfully");
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Restaurant not found");
+        }
+    }
+    @Operation(summary = "Repair a restaurant by ID", description = "Allows the admin to repair a restaurant by its ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Restaurant repaired successfully"),
+            @ApiResponse(responseCode = "404", description = "Restaurant not found")
+    })
+    @DeleteMapping("/restore/{id}")
+    public ResponseEntity<String> repair(@PathVariable Long id) {
+        try {
+            restaurantService.restore(id);
             return ResponseEntity.ok("Restaurant deleted successfully");
         } catch (EntityNotFoundException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Restaurant not found");

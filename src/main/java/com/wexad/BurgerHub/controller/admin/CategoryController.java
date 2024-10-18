@@ -47,7 +47,7 @@ public class CategoryController {
                                                  @RequestPart("image") MultipartFile imageFile) {
         try {
             String imagePath = storageService.uploadFile(imageFile, CATEGORIES_URL);
-            CategoryDTO categoryDTO = new CategoryDTO(categoryName, description, new ImageDTO(imagePath), false);
+            CategoryDTO categoryDTO = new CategoryDTO(0L,categoryName, description, new ImageDTO(imagePath), false);
             categoryService.saveCategory(categoryDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body("Category created successfully.");
         } catch (Exception e) {
@@ -71,7 +71,7 @@ public class CategoryController {
         try {
             if (imageFile != null && !imageFile.isEmpty()) {
                 String imagePath = storageService.uploadFile(imageFile, CATEGORIES_URL);
-                categoryDTO = new CategoryDTO(categoryName, description, new ImageDTO(imagePath), false);
+                categoryDTO = new CategoryDTO(id, categoryName, description, new ImageDTO(imagePath), false);
             }
             categoryService.updateCategory(id, categoryDTO);
             return ResponseEntity.ok("Category updated successfully.");
@@ -126,6 +126,22 @@ public class CategoryController {
         try {
             categoryService.deleteCategory(id);
             return ResponseEntity.ok("Category deleted successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete category.");
+        }
+    }
+
+    @Operation(summary = "Repair category", description = "Repair a category by its ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Category deleted successfully"),
+            @ApiResponse(responseCode = "500", description = "Failed to delete category")
+    })
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/restore/{id}")
+    public ResponseEntity<String> repairCategory(@PathVariable Long id) {
+        try {
+            categoryService.restoreCategory(id);
+            return ResponseEntity.ok("Category restored successfully.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete category.");
         }

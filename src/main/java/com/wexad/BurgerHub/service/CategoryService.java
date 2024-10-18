@@ -52,5 +52,9 @@ public class CategoryService {
         List<Category> categories = categoryRepository.findAll();
         return CATEGORY_MAPPER.toDataDTOList(categories);
     }
+
+    public void restoreCategory(Long id) {
+        categoryRepository.updateRestoredBy(id);
+    }
 }
 

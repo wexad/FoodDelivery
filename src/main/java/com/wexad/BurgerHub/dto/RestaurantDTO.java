@@ -1,4 +1,4 @@
 package com.wexad.BurgerHub.dto;
 
-public record RestaurantDTO(String name, String contactNumber, AddressDTO addressDTO, Boolean deleted) {
+public record RestaurantDTO(Long id, String name, String contactNumber, AddressDTO addressDTO, Boolean deleted) {
 }

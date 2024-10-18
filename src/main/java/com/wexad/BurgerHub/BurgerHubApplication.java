@@ -52,7 +52,7 @@ public class BurgerHubApplication {
                         .description("SpringShop Wiki Documentation")
                         .url("https://springshop.wiki.github.org/docs"))
                 .servers(List.of(
-                        new Server().url("http://51.20.10.41:8080").description("Production Server"),
+                        new Server().url("http://13.60.157.40:8080").description("Production Server"),
                         new Server().url("http://localhost:8080").description("Test Server")
                 ))
                 .addSecurityItem(new SecurityRequirement()

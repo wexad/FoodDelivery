@@ -1,4 +1,4 @@
 package com.wexad.BurgerHub.dto;
 
-public record CategoryDataDTO(Long id,String path, String name) {
+public record CategoryDataDTO(Long id, String path, String name, Boolean deleted) {
 }

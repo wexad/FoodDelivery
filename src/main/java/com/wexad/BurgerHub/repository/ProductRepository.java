@@ -19,4 +19,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p FROM Product p WHERE p.category = :category")
     List<Product> findByCategory(@Param("category") Category category);
 
+    @Transactional
+    @Modifying
+    @Query("update Product a set a.deleted = false where a.id = ?1")
+    void updateRestoredBy(Long id);
 }

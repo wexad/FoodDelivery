@@ -129,6 +129,23 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
         }
     }
+    @Operation(summary = "Repair a product", description = "Allows the admin to repair a product by its ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product repaired successfully"),
+            @ApiResponse(responseCode = "404", description = "Product not found"),
+            @ApiResponse(responseCode = "500", description = "Error repairing product")
+    })
+    @DeleteMapping("/restore/{id}")
+    public ResponseEntity<String> repairProduct(@PathVariable Long id) {
+        try {
+            productService.restoreProduct(id);
+            return ResponseEntity.ok("Product repaired successfully.");
+        } catch (ProductNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
+        }
+    }
 
 
     @Operation(summary = "Update a product", description = "Allows the admin to update a product's details by its ID. Optionally, a new image can be uploaded.")

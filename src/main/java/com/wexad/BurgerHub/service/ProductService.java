@@ -76,4 +76,10 @@ public class ProductService {
     public List<ProductDTO> getProductsForAdmin() {
         return PRODUCT_MAPPER.toDTO(productRepository.findAll());
     }
+
+    public void restoreProduct(Long id) {
+        productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product not found"));
+        productRepository.updateRestoredBy(id);
+    }
+
 }

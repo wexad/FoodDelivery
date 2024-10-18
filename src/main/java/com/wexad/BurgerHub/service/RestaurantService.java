@@ -60,4 +60,12 @@ public class RestaurantService {
         return restaurantRepository.findById(restaurantId).orElseThrow(() ->
                 new EntityNotFoundException("Restaurant not found with id: " + restaurantId));
     }
+
+
+    public void restore(Long id) {
+        Restaurant existingRestaurant = restaurantRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Restaurant not found with id: " + id));
+        restaurantRepository.updateRestoredBy(existingRestaurant.getId());
+    }
+
 }
